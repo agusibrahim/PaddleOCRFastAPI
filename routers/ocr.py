@@ -8,11 +8,11 @@ from utils.ImageHelper import base64_to_ndarray, bytes_to_ndarray
 import requests
 import os
 
-OCR_LANGUAGE = os.environ.get("OCR_LANGUAGE", "en")
+OCR_LANGUAGE = os.environ.get("OCR_LANGUAGE", "ch")
 
 router = APIRouter(prefix="/ocr", tags=["OCR"])
 
-ocr = PaddleOCR(use_angle_cls=True, lang=OCR_LANGUAGE, use_space_char=True)
+ocr = PaddleOCR(use_angle_cls=True, lang=OCR_LANGUAGE, use_space_char=True, use_dilation=True)
 
 
 @router.get('/predict-by-path', response_model=RestfulModel, summary="识别本地图片")
@@ -33,7 +33,7 @@ def predict_by_base64(base64model: Base64PostModel):
 
 
 @router.post('/predict-by-file', response_model=RestfulModel, summary="识别上传文件")
-async def predict_by_file(file: UploadFile):
+async def predict_by_file(file: UploadFile, simple: int = Query(default=0, ge=0, le=1)):
     restfulModel: RestfulModel = RestfulModel()
     if file.filename.endswith((".jpg", ".png")):  # 只处理常见格式图片
         restfulModel.resultcode = 200
@@ -41,7 +41,7 @@ async def predict_by_file(file: UploadFile):
         file_data = file.file
         file_bytes = file_data.read()
         img = bytes_to_ndarray(file_bytes)
-        result = ocr.ocr(img=img, cls=True)
+        result = ocr.ocr(img=img, cls=True, return_detection_result=bool(simple))
         restfulModel.data = result
     else:
         raise HTTPException(
