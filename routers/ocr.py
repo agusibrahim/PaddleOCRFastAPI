@@ -41,7 +41,7 @@ async def predict_by_file(file: UploadFile, simple: int = Query(default=0, ge=0,
         file_data = file.file
         file_bytes = file_data.read()
         img = bytes_to_ndarray(file_bytes)
-        result = ocr.ocr(img=img, cls=True, return_detection_result=bool(simple))
+        result = ocr.ocr(img=img, cls=True, det=bool(simple), rec=True)
         restfulModel.data = result
     else:
         raise HTTPException(
