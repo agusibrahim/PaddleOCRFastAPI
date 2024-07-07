@@ -8,11 +8,11 @@ from utils.ImageHelper import base64_to_ndarray, bytes_to_ndarray
 import requests
 import os
 
-OCR_LANGUAGE = os.environ.get("OCR_LANGUAGE", "ch")
+OCR_LANGUAGE = os.environ.get("OCR_LANGUAGE", "en")
 
 router = APIRouter(prefix="/ocr", tags=["OCR"])
 
-ocr = PaddleOCR(use_angle_cls=True, lang=OCR_LANGUAGE)
+ocr = PaddleOCR(use_angle_cls=True, lang=OCR_LANGUAGE, use_space_char=True)
 
 
 @router.get('/predict-by-path', response_model=RestfulModel, summary="识别本地图片")
