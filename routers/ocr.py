@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, HTTPException, UploadFile, status
+from fastapi import APIRouter, HTTPException, UploadFile,Query, status
 from models.OCRModel import *
 from models.RestfulModel import *
 from paddleocr import PaddleOCR
